@@ -224,13 +224,13 @@
   .btn-agregar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 12px;
     background: var(--naranja);
     color: var(--blanco);
     font-size: 15px;
     font-weight: 800;
-    padding: 17px 24px;
+    padding: 9px 20px;
     border-radius: 50px;
     border: none;
     cursor: pointer;
@@ -239,6 +239,8 @@
     box-shadow: 0 4px 18px rgba(232,87,10,0.35);
     width: 100%;
   }
+  .btn-agregar svg { width: 20px; height: 20px; fill: var(--blanco); flex-shrink: 0; }
+  .btn-agregar span { flex: 1; text-align: right; }
   .btn-agregar:active { transform: scale(0.98); }
   .btn-agregar.added {
     background: #1F8B4C;
