@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>La Vera Pizza</title>
+<style>
+  :root {
+    --naranja: #E8570A;
+    --negro: #0A0A0A;
+    --negro-card: #141414;
+    --negro-soft: #1C1C1C;
+    --gris: #666;
+    --gris-medio: #999;
+    --blanco: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--negro);
+    color: var(--blanco);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── PANTALLA ── */
+  .screen {
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    background: var(--negro);
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.32s ease;
+    will-change: transform, opacity;
+  }
+  .screen.hidden-right {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .screen.hidden-left {
+    transform: translateX(-8%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ══════════════════════════
+     PANTALLA 1 — LISTA
+  ══════════════════════════ */
+  .header {
+    width: 100%;
+    line-height: 0;
+    border-bottom: 3px solid var(--negro);
+  }
+  .header-img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Filtros */
+  .filtros {
+    display: flex;
+    gap: 8px;
+    padding: 14px 18px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid #1A1A1A;
+  }
+  .filtros::-webkit-scrollbar { display: none; }
+  .filtro {
+    flex-shrink: 0;
+    padding: 7px 16px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1.5px solid #2A2A2A;
+    color: var(--gris-medio);
+    background: none;
+    transition: all 0.18s;
+    outline: none;
+  }
+  .filtro.active {
+    background: var(--naranja);
+    border-color: var(--naranja);
+    color: var(--blanco);
+  }
+
+  /* Grid de pizzas */
+  .lista {
+    padding: 14px 18px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pizza-card {
+    background: var(--negro-card);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #1E1E1E;
+    display: flex;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .pizza-card:active { border-color: var(--naranja); }
+  .pizza-card.hidden { display: none; }
+
+  .pizza-card-img {
+    width: 120px;
+    flex-shrink: 0;
+    background: var(--negro-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    border-right: 1px solid #1E1E1E;
+    overflow: hidden;
+  }
+  .pizza-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    background: var(--negro-soft);
+  }
+
+  .pizza-card-info {
+    flex: 1;
+    padding: 14px 14px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .pizza-card-top {}
+  .pizza-card-badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--naranja);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .pizza-card-nombre {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--blanco);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pizza-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pizza-card-desde {
+    font-size: 10px;
+    color: var(--gris);
+  }
+  .pizza-card-precio {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--naranja);
+    line-height: 1;
+  }
+  .pizza-card-precio sup {
+    font-size: 11px;
+    font-weight: 700;
+    vertical-align: super;
+  }
+  .pizza-card-arrow {
+    font-size: 16px;
+    color: var(--gris);
+    margin-left: 6px;
+  }
+
+  /* FAB whatsapp */
+  .fab {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 999;
+    background: #25D366;
+    color: var(--blanco);
+    padding: 13px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    animation: pulse 2.5s infinite;
+  }
+  .fab svg { width: 20px; height: 20px; fill: white; flex-shrink: 0; }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+    50%      { box-shadow: 0 6px 28px rgba(37,211,102,0.65); }
+  }
+
+  /* ══════════════════════════
+     PANTALLA 2 — DETALLE
+  ══════════════════════════ */
+  .detalle-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #1A1A1A;
+  }
+  .btn-back {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--negro-soft);
+    border: 1px solid #2A2A2A;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    outline: none;
+  }
+  .btn-back svg { width: 18px; height: 18px; fill: var(--blanco); }
+
+  .detalle-header-nombre {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--blanco);
+  }
+
+  /* Imagen grande */
+  .detalle-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: var(--negro-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    border-bottom: 1px solid #1A1A1A;
+    position: relative;
+    overflow: hidden;
+  }
+  .detalle-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+  .detalle-img-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    font-size: 10px;
+    color: #333;
+    font-style: italic;
+    font-family: sans-serif;
+  }
+
+  /* Info detalle */
+  .detalle-body {
+    padding: 20px 18px 120px;
+  }
+  .detalle-nombre {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--blanco);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.05;
+    margin-bottom: 6px;
+  }
+  .detalle-ingredientes {
+    font-size: 13px;
+    color: var(--gris-medio);
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  /* Selector de tallas */
+  .tallas-titulo {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 10px;
+  }
+  .tallas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .talla-opcion {
+    background: var(--negro-soft);
+    border: 1.5px solid #2A2A2A;
+    border-radius: 14px;
+    padding: 14px 8px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .talla-opcion.selected {
+    border-color: var(--naranja);
+    background: rgba(232,87,10,0.08);
+  }
+  .talla-opcion-num {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--blanco);
+    display: block;
+    line-height: 1;
+  }
+  .talla-opcion-label {
+    font-size: 8.5px;
+    color: var(--gris);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .talla-opcion-nombre {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gris-medio);
+    text-transform: uppercase;
+    display: block;
+    border-top: 1px solid #2A2A2A;
+    padding-top: 8px;
+    margin-top: 2px;
+  }
+  .talla-opcion.selected .talla-opcion-nombre {
+    color: var(--naranja);
+    border-top-color: rgba(232,87,10,0.3);
+  }
+  .talla-opcion-precio {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--naranja);
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* CTA pedir */
+  .btn-pedir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #25D366;
+    color: var(--blanco);
+    font-size: 15px;
+    font-weight: 800;
+    padding: 17px 24px;
+    border-radius: 50px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    box-shadow: 0 4px 18px rgba(37,211,102,0.3);
+    width: 100%;
+  }
+  .btn-pedir svg { width: 22px; height: 22px; fill: white; flex-shrink: 0; }
+
+  /* ── MITAD Y MITAD ── */
+  .mitad-badge-wrap {
+    text-align: center;
+    margin-bottom: -8px;
+    position: relative;
+    z-index: 2;
+  }
+  .mitad-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #FFC93C, #F0B429);
+    color: var(--negro);
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 30px;
+    box-shadow: 0 3px 10px rgba(240,180,41,0.4);
+  }
+  .mitad-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--naranja) 0%, var(--naranja-oscuro) 100%);
+    border: 2px solid var(--naranja);
+    border-radius: 18px;
+    padding: 18px 18px 16px;
+    margin-bottom: 20px;
+    margin-top: 14px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 6px 22px rgba(232,87,10,0.35);
+    animation: mitadPulse 2.2s infinite;
+  }
+  .mitad-toggle:active { transform: scale(0.98); }
+  .mitad-toggle.on {
+    background: var(--negro-soft);
+    border-color: var(--naranja);
+    box-shadow: none;
+    animation: none;
+  }
+  @keyframes mitadPulse {
+    0%, 100% { box-shadow: 0 6px 22px rgba(232,87,10,0.35); }
+    50%      { box-shadow: 0 8px 30px rgba(232,87,10,0.6); }
+  }
+  .mitad-toggle-left { display: flex; align-items: center; gap: 14px; }
+  .mitad-toggle-icon {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    flex-shrink: 0;
+    border: 2.5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  .mitad-toggle-icon .half {
+    width: 50%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .mitad-toggle-icon .half.l { background: #FFD9A0; color: var(--negro); }
+  .mitad-toggle-icon .half.r { background: var(--negro); color: var(--blanco); }
+  .mitad-toggle-text strong {
+    display: block;
+    font-size: 16px;
+    color: var(--blanco);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .mitad-toggle-text span {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+  }
+  .mitad-toggle.on .mitad-toggle-text strong,
+  .mitad-toggle.on .mitad-toggle-text span { color: var(--blanco); }
+  .mitad-toggle.on .mitad-toggle-text span { color: var(--gris); }
+  .toggle-switch {
+    width: 46px; height: 26px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 30px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(255,255,255,0.3);
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    background: var(--blanco);
+    border-radius: 50%;
+    top: 2px; left: 2px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .mitad-toggle.on .toggle-switch { background: var(--naranja); border-color: var(--naranja); }
+  .mitad-toggle.on .toggle-switch::after { transform: translateX(20px); }
+
+  /* Selector de 2do sabor */
+  .segundo-sabor {
+    display: none;
+    margin-bottom: 20px;
+  }
+  .segundo-sabor.visible { display: block; }
+  .segundo-sabor-titulo {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--gris); margin-bottom: 10px;
+  }
+  .sabores-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .sabores-lista::-webkit-scrollbar { display: none; }
+  .sabor-opcion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--negro-soft);
+    border: 1.5px solid #2A2A2A;
+    border-radius: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .sabor-opcion.selected { border-color: var(--naranja); background: rgba(232,87,10,0.07); }
+  .sabor-opcion.disabled { opacity: 0.3; pointer-events: none; }
+  .sabor-thumb {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #222;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .sabor-thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .sabor-info { flex: 1; }
+  .sabor-nombre { font-size: 14px; font-weight: 700; color: var(--blanco); display: block; }
+  .sabor-precio-diff { font-size: 12px; color: #F0B429; font-weight: 700; display: block; margin-top: 2px; }
+  .sabor-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid #333;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    transition: all 0.15s;
+  }
+  .sabor-opcion.selected .sabor-check {
+    background: var(--naranja);
+    border-color: var(--naranja);
+    color: white;
+  }
+
+  /* Resumen precio mitad */
+  .precio-resumen {
+    background: var(--negro-soft);
+    border: 1px solid #2A2A2A;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .precio-resumen-label { font-size: 12px; color: var(--gris); line-height: 1.4; }
+  .precio-resumen-label strong { color: var(--blanco); display: block; font-size: 13px; }
+  .precio-resumen-label span#resumen-detalle { color: #F0B429; font-weight: 700; font-size: 12px; }
+  .precio-resumen-total { font-size: 26px; font-weight: 900; color: var(--naranja); }
+  .precio-resumen-total sup { font-size: 13px; font-weight: 700; vertical-align: super; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════
+     PANTALLA 1 — LISTA
+════════════════════════════ -->
+<div class="screen" id="screen-lista">
+
+  <div class="header">
+    <img class="header-img" src="assets/header.png" alt="La Vera Pizza - 974 839 429">
+  </div>
+
+  <div class="filtros">
+    <button class="filtro active" onclick="filtrar('todos', this)">Todas</button>
+    <button class="filtro" onclick="filtrar('favorita', this)">⭐ Favoritas</button>
+    <button class="filtro" onclick="filtrar('especial', this)">🔥 Especiales</button>
+    <button class="filtro" onclick="filtrar('clasica', this)">✨ Clásicas</button>
+    <button class="filtro" onclick="filtrar('combo', this)">🎁 Combos</button>
+    <button class="filtro" onclick="filtrar('pan', this)">🥖 Pan al Ajo</button>
+  </div>
+
+  <div class="lista">
+
+    <div class="pizza-card" data-cat="favorita" onclick="abrirDetalle('carni')">
+      <div class="pizza-card-img"><img src="assets/carnivora.png" alt="Carnívora" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">⭐ Favorita</span>
+          <div class="pizza-card-nombre">Carnívora</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">desde</div>
+            <div class="pizza-card-precio"><sup>S/</sup>29</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="favorita" onclick="abrirDetalle('hawaiana')">
+      <div class="pizza-card-img"><img src="assets/hawaiana.png" alt="Hawaiana" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">⭐ Favorita</span>
+          <div class="pizza-card-nombre">Hawaiana</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">desde</div>
+            <div class="pizza-card-precio"><sup>S/</sup>23</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="especial" onclick="abrirDetalle('vera')">
+      <div class="pizza-card-img"><img src="assets/vera-pizza.png" alt="Vera Pizza" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🔥 Especial</span>
+          <div class="pizza-card-nombre">Vera Pizza</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">desde</div>
+            <div class="pizza-card-precio"><sup>S/</sup>32</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="especial" onclick="abrirDetalle('tropical')">
+      <div class="pizza-card-img"><img src="assets/tropical.png" alt="Tropical" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🔥 Especial</span>
+          <div class="pizza-card-nombre">Tropical</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">desde</div>
+            <div class="pizza-card-precio"><sup>S/</sup>29</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="clasica" onclick="abrirDetalle('americana')">
+      <div class="pizza-card-img"><img src="assets/americana.png" alt="Americana" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">✨ Clásica</span>
+          <div class="pizza-card-nombre">Americana</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">desde</div>
+            <div class="pizza-card-precio"><sup>S/</sup>22</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="clasica" onclick="abrirDetalle('pepperoni')">
+      <div class="pizza-card-img"><img src="assets/pepperoni.png" alt="Pepperoni" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">✨ Clásica</span>
+          <div class="pizza-card-nombre">Pepperoni</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">desde</div>
+            <div class="pizza-card-precio"><sup>S/</sup>27</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="combo" onclick="abrirDetalle('netflix')">
+      <div class="pizza-card-img"><img src="assets/combo-netflix.jpg" alt="Combo Netflix" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🎁 Combo</span>
+          <div class="pizza-card-nombre">Combo Netflix</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">precio único</div>
+            <div class="pizza-card-precio"><sup>S/</sup>45</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="combo" onclick="abrirDetalle('bestia')">
+      <div class="pizza-card-img"><img src="assets/combo-bestia.jpg" alt="Combo La Bestia" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🎁 Combo</span>
+          <div class="pizza-card-nombre">Combo La Bestia</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">precio único</div>
+            <div class="pizza-card-precio"><sup>S/</sup>67</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <a class="fab" href="https://wa.me/51974839429?text=Hola%2C%20quiero%20hacer%20un%20pedido%20%F0%9F%8D%95" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Pedir ahora
+  </a>
+</div>
+
+<!-- ════════════════════════════
+     PANTALLA 2 — DETALLE
+════════════════════════════ -->
+<div class="screen hidden-right" id="screen-detalle">
+
+  <div class="detalle-header">
+    <button class="btn-back" onclick="cerrarDetalle()">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="detalle-header-nombre" id="detalle-header-nombre">—</div>
+  </div>
+
+  <div class="detalle-img" id="detalle-img">
+    <span id="detalle-emoji">🍕</span>
+    <span class="detalle-img-hint">foto próximamente</span>
+  </div>
+
+  <div class="detalle-body">
+    <div class="detalle-nombre" id="detalle-nombre">—</div>
+    <div class="detalle-ingredientes" id="detalle-ingredientes">—</div>
+
+    <div id="bloque-tallas">
+      <div class="tallas-titulo">Elige tu tamaño</div>
+      <div class="tallas-grid" id="tallas-grid"></div>
+
+      <!-- Toggle mitad y mitad -->
+      <div class="mitad-badge-wrap">
+        <span class="mitad-badge">🔥 ¿Indeciso? Mezcla 2 sabores</span>
+      </div>
+      <div class="mitad-toggle" id="mitad-toggle" onclick="toggleMitad()">
+        <div class="mitad-toggle-left">
+          <div class="mitad-toggle-icon">
+            <div class="half l">½</div>
+            <div class="half r">½</div>
+          </div>
+          <div class="mitad-toggle-text">
+            <strong>Mitad y mitad</strong>
+            <span>Elige tu segundo sabor aquí</span>
+          </div>
+        </div>
+        <div class="toggle-switch"></div>
+      </div>
+
+      <!-- Selector 2do sabor -->
+      <div class="segundo-sabor" id="segundo-sabor">
+        <div class="segundo-sabor-titulo">Elige el 2do sabor</div>
+        <div class="sabores-lista" id="sabores-lista"></div>
+      </div>
+
+      <!-- Resumen de precio -->
+      <div class="precio-resumen" id="precio-resumen">
+        <div class="precio-resumen-label">
+          <strong id="resumen-descripcion">—</strong>
+          <span id="resumen-detalle"></span>
+        </div>
+        <div class="precio-resumen-total"><sup>S/</sup><span id="resumen-precio">—</span></div>
+      </div>
+    </div>
+
+    <div id="bloque-combo" style="display:none; margin-bottom:24px;">
+      <div class="tallas-titulo" style="margin-bottom:12px;">Incluye</div>
+      <div id="combo-items"></div>
+    </div>
+
+    <a class="btn-pedir" id="btn-pedir" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Pedir por WhatsApp
+    </a>
+  </div>
+
+</div>
+
+<script>
+const PIZZAS = {
+  carni: {
+    nombre: 'Carnívora', emoji: '🥩', img: 'assets/carnivora.png',
+    ingredientes: 'Mozzarella, jamón, tocino, chorizo, cabanossi y bolitas de carne.',
+    tallas: [
+      { nombre:'Pequeña', porciones:4, precio:29 },
+      { nombre:'Mediana', porciones:6, precio:42 },
+      { nombre:'Familiar', porciones:8, precio:55 }
+    ]
+  },
+  hawaiana: {
+    nombre: 'Hawaiana', emoji: '🍍', img: 'assets/hawaiana.png',
+    ingredientes: 'Mozzarella, jamón, piña y durazno.',
+    tallas: [
+      { nombre:'Pequeña', porciones:4, precio:23 },
+      { nombre:'Mediana', porciones:6, precio:34 },
+      { nombre:'Familiar', porciones:8, precio:42 }
+    ]
+  },
+  vera: {
+    nombre: 'Vera Pizza', emoji: '🔥', img: 'assets/vera-pizza.png',
+    ingredientes: 'Combinación completa de las mejores carnes y vegetales más frescos.',
+    tallas: [
+      { nombre:'Pequeña', porciones:4, precio:32 },
+      { nombre:'Mediana', porciones:6, precio:46 },
+      { nombre:'Familiar', porciones:8, precio:61 }
+    ]
+  },
+  tropical: {
+    nombre: 'Tropical', emoji: '🍍', img: 'assets/tropical.png',
+    ingredientes: 'Pollo ahumado, piña y durazno.',
+    tallas: [
+      { nombre:'Pequeña', porciones:4, precio:29 },
+      { nombre:'Mediana', porciones:6, precio:42 },
+      { nombre:'Familiar', porciones:8, precio:55 }
+    ]
+  },
+  americana: {
+    nombre: 'Americana', emoji: '🧀', img: 'assets/americana.png',
+    ingredientes: 'Mozzarella y jamón.',
+    tallas: [
+      { nombre:'Pequeña', porciones:4, precio:22 },
+      { nombre:'Mediana', porciones:6, precio:32 },
+      { nombre:'Familiar', porciones:8, precio:40 }
+    ]
+  },
+  pepperoni: {
+    nombre: 'Pepperoni', emoji: '🍕', img: 'assets/pepperoni.png',
+    ingredientes: 'Mozzarella, pepperoni y jamón.',
+    tallas: [
+      { nombre:'Pequeña', porciones:4, precio:27 },
+      { nombre:'Mediana', porciones:6, precio:37 },
+      { nombre:'Familiar', porciones:8, precio:52 }
+    ]
+  },
+  netflix: {
+    nombre: 'Combo Netflix', emoji: '🎬', img: 'assets/combo-netflix.jpg',
+    ingredientes: 'La noche perfecta para dos.',
+    esCombo: true, precio: 45,
+    items: ['1 Pizza Mediana mitad y mitad (Americana + Pepperoni) — 6 porciones','1 Porción de Pan al Ajo','1 Gaseosa 1.5 L']
+  },
+  bestia: {
+    nombre: 'Combo La Bestia', emoji: '💪', img: 'assets/combo-bestia.jpg',
+    ingredientes: 'Para los más hambrientos.',
+    esCombo: true, precio: 67,
+    items: ['Pizza Familiar Carnívora — 8 porciones','Pan al Ajo de Chorizo','Chimichurri de la casa','Gaseosa 1.5 L'],
+  pan_clasico: {
+    nombre: 'Pan al Ajo Clásico', emoji: '🥖',
+    ingredientes: 'Pan horneado con mantequilla de ajo y hierbas.',
+    esCombo: true, precio: 8
+  },
+  pan_americano: {
+    nombre: 'Pan al Ajo Americano', emoji: '🥖',
+    ingredientes: 'Pan al ajo cubierto con mozzarella y jamón.',
+    esCombo: true, precio: 9
+  },
+  pan_hawaiano: {
+    nombre: 'Pan al Ajo Hawaiano', emoji: '🥖',
+    ingredientes: 'Pan al ajo cubierto con mozzarella, jamón y piña.',
+    esCombo: true, precio: 9
+  },
+  pan_chorizo: {
+    nombre: 'Pan al Ajo de Chorizo', emoji: '🥖',
+    ingredientes: 'Pan al ajo cubierto con mozzarella y chorizo.',
+    esCombo: true, precio: 10
+  },
+  pan_champinones: {
+    nombre: 'Pan al Ajo de Champiñones', emoji: '🥖',
+    ingredientes: 'Pan al ajo cubierto con mozzarella y champiñones salteados.',
+    esCombo: true, precio: 10
+  }
+};
+
+let tallaSeleccionada = 0;
+let pizzaActual = null;
+let pizzaActualId = null;
+let mitadActiva = false;
+let segundoSaborId = null;
+
+function abrirDetalle(id) {
+  const p = PIZZAS[id];
+  pizzaActual = p;
+  pizzaActualId = id;
+  tallaSeleccionada = 0;
+  mitadActiva = false;
+  segundoSaborId = null;
+
+  document.getElementById('detalle-header-nombre').textContent = p.nombre;
+  document.getElementById('detalle-nombre').textContent = p.nombre;
+  document.getElementById('detalle-ingredientes').textContent = p.ingredientes;
+
+  const imgEl = document.getElementById('detalle-emoji');
+  const hintEl = document.querySelector('.detalle-img-hint');
+  if (p.img) {
+    imgEl.innerHTML = '<img src="' + p.img + '" style="width:100%;height:100%;object-fit:contain;position:absolute;inset:0;background:#1C1C1C;">';
+    if (hintEl) hintEl.style.display = 'none';
+  } else {
+    imgEl.innerHTML = p.emoji;
+    if (hintEl) hintEl.style.display = 'block';
+  }
+
+  const bloqTallas = document.getElementById('bloque-tallas');
+  const bloqCombo  = document.getElementById('bloque-combo');
+
+  if (p.esCombo) {
+    bloqTallas.style.display = 'none';
+    bloqCombo.style.display  = 'block';
+    document.getElementById('combo-items').innerHTML = p.items.map(i =>
+      `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #1E1E1E;font-size:13px;color:#BBB;">
+        <span style="color:var(--naranja);flex-shrink:0;">✓</span><span>${i}</span>
+      </div>`
+    ).join('');
+    actualizarWA(p.nombre, null, p.precio);
+  } else {
+    bloqTallas.style.display = 'block';
+    bloqCombo.style.display  = 'none';
+    // Reset toggle
+    const toggle = document.getElementById('mitad-toggle');
+    toggle.classList.remove('on');
+    document.getElementById('segundo-sabor').classList.remove('visible');
+    renderTallas(p);
+  }
+
+  document.getElementById('screen-lista').classList.add('hidden-left');
+  document.getElementById('screen-detalle').classList.remove('hidden-right');
+  document.getElementById('screen-detalle').scrollTop = 0;
+}
+
+function renderTallas(p) {
+  const grid = document.getElementById('tallas-grid');
+  grid.innerHTML = p.tallas.map((t, i) =>
+    `<div class="talla-opcion ${i===tallaSeleccionada?'selected':''}" onclick="selTalla(${i})">
+      <span class="talla-opcion-num">${t.porciones}</span>
+      <span class="talla-opcion-label">porciones</span>
+      <span class="talla-opcion-nombre">${t.nombre}</span>
+      <span class="talla-opcion-precio">S/ ${t.precio}</span>
+    </div>`
+  ).join('');
+
+  // Si mitad activa y cambió talla, resetear 2do sabor
+  if (mitadActiva) {
+    segundoSaborId = null;
+    renderSabores();
+  }
+
+  actualizarResumen();
+}
+
+function selTalla(i) {
+  tallaSeleccionada = i;
+  renderTallas(pizzaActual);
+}
+
+// ── MITAD Y MITAD ──────────────────────────────────────────────
+function toggleMitad() {
+  mitadActiva = !mitadActiva;
+  segundoSaborId = null;
+  const toggle = document.getElementById('mitad-toggle');
+  const panel  = document.getElementById('segundo-sabor');
+  toggle.classList.toggle('on', mitadActiva);
+  panel.classList.toggle('visible', mitadActiva);
+  if (mitadActiva) renderSabores();
+  actualizarResumen();
+}
+
+function renderSabores() {
+  const lista = document.getElementById('sabores-lista');
+  // Todas las pizzas excepto la actual y combos
+  const opciones = Object.entries(PIZZAS).filter(([id, p]) => id !== pizzaActualId && !p.esCombo);
+  const tallaActual = pizzaActual.tallas[tallaSeleccionada];
+
+  lista.innerHTML = opciones.map(([id, p]) => {
+    const talla = p.tallas[tallaSeleccionada];
+    const selected = id === segundoSaborId ? 'selected' : '';
+    const precioBase = tallaActual.precio;
+    const precioEste = talla.precio;
+    const promedio   = Math.ceil((precioBase + precioEste) / 2);
+    const diff       = promedio - precioBase;
+    const diffTxt    = diff > 0 ? `+S/ ${diff} vs solo` : diff < 0 ? `-S/ ${Math.abs(diff)} vs solo` : 'mismo precio';
+
+    const thumb = p.img
+      ? `<img src="${p.img}" style="width:100%;height:100%;object-fit:contain;">`
+      : p.emoji;
+
+    return `<div class="sabor-opcion ${selected}" onclick="selSabor('${id}')">
+      <div class="sabor-thumb">${thumb}</div>
+      <div class="sabor-info">
+        <span class="sabor-nombre">${p.nombre}</span>
+        <span class="sabor-precio-diff">S/ ${talla.precio} · precio mitad: S/ ${promedio}</span>
+      </div>
+      <div class="sabor-check">${selected ? '✓' : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function selSabor(id) {
+  segundoSaborId = id;
+  renderSabores();
+  actualizarResumen();
+}
+
+function calcPrecioMitad() {
+  if (!mitadActiva || !segundoSaborId) return null;
+  const p1 = pizzaActual.tallas[tallaSeleccionada].precio;
+  const p2 = PIZZAS[segundoSaborId].tallas[tallaSeleccionada].precio;
+  return Math.ceil((p1 + p2) / 2);
+}
+
+function actualizarResumen() {
+  const t = pizzaActual.tallas[tallaSeleccionada];
+  let descripcion, detalle, precio;
+
+  if (mitadActiva && segundoSaborId) {
+    const p2    = PIZZAS[segundoSaborId];
+    const prec2 = p2.tallas[tallaSeleccionada].precio;
+    precio      = Math.ceil((t.precio + prec2) / 2);
+    descripcion = `${t.nombre} · Mitad y mitad`;
+    detalle     = `${pizzaActual.nombre} + ${p2.nombre}`;
+  } else {
+    precio      = t.precio;
+    descripcion = `${t.nombre} · ${t.porciones} porciones`;
+    detalle     = mitadActiva ? 'Elige el 2do sabor 👆' : '';
+  }
+
+  document.getElementById('resumen-descripcion').textContent = descripcion;
+  document.getElementById('resumen-detalle').textContent     = detalle;
+  document.getElementById('resumen-precio').textContent      = precio;
+
+  // Actualizar botón WA
+  let texto;
+  if (mitadActiva && segundoSaborId) {
+    const p2 = PIZZAS[segundoSaborId];
+    texto = `Hola, quiero pedir una pizza *${t.nombre} mitad y mitad*: ½ *${pizzaActual.nombre}* + ½ *${p2.nombre}* (S/ ${precio}) 🍕`;
+  } else if (!mitadActiva) {
+    texto = `Hola, quiero pedir una *${pizzaActual.nombre} ${t.nombre}* (S/ ${t.precio}) 🍕`;
+  } else {
+    texto = `Hola, quiero pedir una *${pizzaActual.nombre} ${t.nombre}* (S/ ${t.precio}) 🍕`;
+  }
+  document.getElementById('btn-pedir').href =
+    'https://wa.me/51974839429?text=' + encodeURIComponent(texto);
+}
+
+function actualizarWA(nombre, talla, precio) {
+  const texto = talla
+    ? `Hola, quiero pedir una *${nombre} ${talla}* (S/ ${precio}) 🍕`
+    : `Hola, quiero pedir el *${nombre}* (S/ ${precio}) 🍕`;
+  document.getElementById('btn-pedir').href =
+    'https://wa.me/51974839429?text=' + encodeURIComponent(texto);
+}
+
+function cerrarDetalle() {
+  document.getElementById('screen-detalle').classList.add('hidden-right');
+  document.getElementById('screen-lista').classList.remove('hidden-left');
+}
+
+function filtrar(cat, btn) {
+  document.querySelectorAll('.filtro').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.pizza-card').forEach(card => {
+    if (cat === 'todos' || card.dataset.cat === cat) {
+      card.classList.remove('hidden');
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+}
+</script>
+</body>
+</html>
