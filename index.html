@@ -703,6 +703,91 @@
       </div>
     </div>
 
+    <div class="pizza-card" data-cat="pan" onclick="abrirDetalle('pan_clasico')">
+      <div class="pizza-card-img">🥖</div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🥖 Pan al Ajo</span>
+          <div class="pizza-card-nombre">Clásico</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">precio único</div>
+            <div class="pizza-card-precio"><sup>S/</sup>8</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="pan" onclick="abrirDetalle('pan_americano')">
+      <div class="pizza-card-img">🥓</div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🥖 Pan al Ajo</span>
+          <div class="pizza-card-nombre">Americano</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">precio único</div>
+            <div class="pizza-card-precio"><sup>S/</sup>9</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="pan" onclick="abrirDetalle('pan_hawaiano')">
+      <div class="pizza-card-img">🍍</div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🥖 Pan al Ajo</span>
+          <div class="pizza-card-nombre">Hawaiano</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">precio único</div>
+            <div class="pizza-card-precio"><sup>S/</sup>9</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="pan" onclick="abrirDetalle('pan_chorizo')">
+      <div class="pizza-card-img">🌭</div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🥖 Pan al Ajo</span>
+          <div class="pizza-card-nombre">De Chorizo</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">precio único</div>
+            <div class="pizza-card-precio"><sup>S/</sup>10</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pizza-card" data-cat="pan" onclick="abrirDetalle('pan_champinones')">
+      <div class="pizza-card-img">🍄</div>
+      <div class="pizza-card-info">
+        <div class="pizza-card-top">
+          <span class="pizza-card-badge">🥖 Pan al Ajo</span>
+          <div class="pizza-card-nombre">De Champiñones</div>
+        </div>
+        <div class="pizza-card-bottom">
+          <div>
+            <div class="pizza-card-desde">precio único</div>
+            <div class="pizza-card-precio"><sup>S/</sup>10</div>
+          </div>
+          <span class="pizza-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <a class="fab" href="https://wa.me/51974839429?text=Hola%2C%20quiero%20hacer%20un%20pedido%20%F0%9F%8D%95" target="_blank" rel="noopener">
@@ -849,30 +934,31 @@ const PIZZAS = {
     nombre: 'Combo La Bestia', emoji: '💪', img: 'assets/combo-bestia.jpg',
     ingredientes: 'Para los más hambrientos.',
     esCombo: true, precio: 67,
-    items: ['Pizza Familiar Carnívora — 8 porciones','Pan al Ajo de Chorizo','Chimichurri de la casa','Gaseosa 1.5 L'],
+    items: ['Pizza Familiar Carnívora — 8 porciones','Pan al Ajo de Chorizo','Chimichurri de la casa','Gaseosa 1.5 L']
+  },
   pan_clasico: {
     nombre: 'Pan al Ajo Clásico', emoji: '🥖',
     ingredientes: 'Pan horneado con mantequilla de ajo y hierbas.',
     esCombo: true, precio: 8
   },
   pan_americano: {
-    nombre: 'Pan al Ajo Americano', emoji: '🥖',
-    ingredientes: 'Pan al ajo cubierto con mozzarella y jamón.',
+    nombre: 'Pan al Ajo Americano', emoji: '🥓',
+    ingredientes: 'Pan al ajo especial con un toque americano.',
     esCombo: true, precio: 9
   },
   pan_hawaiano: {
-    nombre: 'Pan al Ajo Hawaiano', emoji: '🥖',
-    ingredientes: 'Pan al ajo cubierto con mozzarella, jamón y piña.',
+    nombre: 'Pan al Ajo Hawaiano', emoji: '🍍',
+    ingredientes: 'Pan al ajo especial con un toque hawaiano.',
     esCombo: true, precio: 9
   },
   pan_chorizo: {
-    nombre: 'Pan al Ajo de Chorizo', emoji: '🥖',
-    ingredientes: 'Pan al ajo cubierto con mozzarella y chorizo.',
+    nombre: 'Pan al Ajo de Chorizo', emoji: '🌭',
+    ingredientes: 'Pan al ajo especial con chorizo.',
     esCombo: true, precio: 10
   },
   pan_champinones: {
-    nombre: 'Pan al Ajo de Champiñones', emoji: '🥖',
-    ingredientes: 'Pan al ajo cubierto con mozzarella y champiñones salteados.',
+    nombre: 'Pan al Ajo de Champiñones', emoji: '🍄',
+    ingredientes: 'Pan al ajo especial con champiñones salteados.',
     esCombo: true, precio: 10
   }
 };
