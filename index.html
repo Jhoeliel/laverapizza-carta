@@ -1239,11 +1239,17 @@ function abrirDetalle(id) {
   if (p.esCombo) {
     bloqTallas.style.display = 'none';
     bloqCombo.style.display  = 'block';
-    document.getElementById('combo-items').innerHTML = p.items.map(i =>
-      `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #1E1E1E;font-size:13px;color:#BBB;">
-        <span style="color:var(--naranja);flex-shrink:0;">✓</span><span>${i}</span>
-      </div>`
-    ).join('');
+    if (p.items && p.items.length) {
+      document.getElementById('combo-items').innerHTML = p.items.map(i =>
+        `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #1E1E1E;font-size:13px;color:#BBB;">
+          <span style="color:var(--naranja);flex-shrink:0;">✓</span><span>${i}</span>
+        </div>`
+      ).join('');
+      bloqCombo.style.display = 'block';
+    } else {
+      // Producto de precio único sin lista de items (ej: Pan al Ajo)
+      bloqCombo.style.display = 'none';
+    }
   } else {
     bloqTallas.style.display = 'block';
     bloqCombo.style.display  = 'none';
