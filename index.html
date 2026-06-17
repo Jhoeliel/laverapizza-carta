@@ -184,42 +184,37 @@
     bottom: 18px;
     right: 18px;
     z-index: 999;
+    width: 56px;
+    height: 56px;
     background: var(--naranja);
-    color: var(--blanco);
-    padding: 12px 18px;
-    border-radius: 50px;
+    border-radius: 50%;
     display: none;
     align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    font-weight: 800;
-    text-decoration: none;
+    justify-content: center;
     border: none;
     cursor: pointer;
     box-shadow: 0 4px 20px rgba(232,87,10,0.45);
     animation: pulse 2.5s infinite;
   }
   .fab.visible { display: flex; }
-  .fab-left { display: flex; align-items: center; gap: 10px; }
+  .fab svg { width: 24px; height: 24px; fill: var(--blanco); }
   .fab-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
     background: var(--negro);
     color: var(--blanco);
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    border: 2px solid var(--naranja);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 11px;
     font-weight: 900;
-    flex-shrink: 0;
   }
-  .fab-label {
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .fab-total {
-    font-size: 14px;
-    font-weight: 900;
-  }
-  .fab svg { width: 20px; height: 20px; fill: white; flex-shrink: 0; }
   @keyframes pulse {
     0%,100% { box-shadow: 0 4px 20px rgba(232,87,10,0.45); }
     50%      { box-shadow: 0 6px 28px rgba(232,87,10,0.7); }
@@ -979,11 +974,8 @@
   </div>
 
   <button class="fab" id="fab-carrito" onclick="abrirCarrito()">
-    <div class="fab-left">
-      <div class="fab-count" id="fab-count">0</div>
-      <span class="fab-label">Ver pedido</span>
-    </div>
-    <span class="fab-total"><sup style="font-size:11px;">S/</sup> <span id="fab-total">0</span></span>
+    <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+    <span class="fab-count" id="fab-count">0</span>
   </button>
 </div>
 
@@ -1441,10 +1433,8 @@ function agregarAlCarrito() {
 
 function actualizarFabCarrito() {
   const totalItems = carrito.reduce((s, c) => s + c.cantidad, 0);
-  const totalPrecio = carrito.reduce((s, c) => s + c.precioUnit * c.cantidad, 0);
   const fab = document.getElementById('fab-carrito');
   document.getElementById('fab-count').textContent = totalItems;
-  document.getElementById('fab-total').textContent = totalPrecio;
   fab.classList.toggle('visible', totalItems > 0);
 }
 
