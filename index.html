@@ -854,34 +854,17 @@
       </div>
     </div>
 
-    <div class="pizza-card" data-cat="combo" onclick="abrirDetalle('netflix')">
-      <div class="pizza-card-img"><img src="assets/combo-netflix.jpg" alt="Combo Netflix" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
+    <div class="pizza-card" data-cat="combo" onclick="abrirDetalle('pareja')">
+      <div class="pizza-card-img"><img src="assets/combo-pareja.jpg" alt="Combo Pareja" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
       <div class="pizza-card-info">
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🎁 Combo</span>
-          <div class="pizza-card-nombre">Combo Netflix</div>
+          <div class="pizza-card-nombre">Combo Pareja</div>
         </div>
         <div class="pizza-card-bottom">
           <div>
             <div class="pizza-card-desde">precio único</div>
-            <div class="pizza-card-precio"><sup>S/</sup>45</div>
-          </div>
-          <span class="pizza-card-arrow">›</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="pizza-card" data-cat="combo" onclick="abrirDetalle('bestia')">
-      <div class="pizza-card-img"><img src="assets/combo-bestia.jpg" alt="Combo La Bestia" style="width:100%;height:100%;object-fit:contain;background:#1C1C1C;"></div>
-      <div class="pizza-card-info">
-        <div class="pizza-card-top">
-          <span class="pizza-card-badge">🎁 Combo</span>
-          <div class="pizza-card-nombre">Combo La Bestia</div>
-        </div>
-        <div class="pizza-card-bottom">
-          <div>
-            <div class="pizza-card-desde">precio único</div>
-            <div class="pizza-card-precio"><sup>S/</sup>67</div>
+            <div class="pizza-card-precio"><sup>S/</sup>43</div>
           </div>
           <span class="pizza-card-arrow">›</span>
         </div>
@@ -1151,17 +1134,11 @@ const PIZZAS = {
       { nombre:'Familiar', porciones:8, precio:52 }
     ]
   },
-  netflix: {
-    nombre: 'Combo Netflix', emoji: '🎬', img: 'assets/combo-netflix.jpg',
-    ingredientes: 'La noche perfecta para dos.',
-    esCombo: true, precio: 45,
-    items: ['1 Pizza Mediana mitad y mitad (Americana + Pepperoni) — 6 porciones','1 Porción de Pan al Ajo','1 Gaseosa 1.5 L']
-  },
-  bestia: {
-    nombre: 'Combo La Bestia', emoji: '💪', img: 'assets/combo-bestia.jpg',
-    ingredientes: 'Para los más hambrientos.',
-    esCombo: true, precio: 67,
-    items: ['Pizza Familiar Carnívora — 8 porciones','Pan al Ajo de Chorizo','Chimichurri de la casa','Gaseosa 1.5 L']
+  pareja: {
+    nombre: 'Combo Pareja', emoji: '💑', img: 'assets/combo-pareja.jpg',
+    ingredientes: 'La combinación perfecta para compartir.',
+    esCombo: true, precio: 43,
+    items: ['1 Pizza Mediana mitad y mitad (½ Hawaiana + ½ Carnívora) — 6 porciones','1 Pan al Ajo Clásico','1 Gaseosa 1L']
   },
   pan_clasico: {
     nombre: 'Pan al Ajo Clásico', emoji: '🥖', img: 'assets/pan-al-ajo.jpg',
