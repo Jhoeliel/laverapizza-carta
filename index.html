@@ -152,6 +152,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .pizza-card-desc {
+    display: none;
+  }
   .pizza-card-bottom {
     display: flex;
     align-items: center;
@@ -753,13 +756,24 @@
       padding: 18px 18px 100px;
     }
     .pizza-card {
-      flex-direction: column;
+      flex-direction: row;
     }
     .pizza-card-img {
-      width: 100%;
-      height: 160px;
-      border-right: none;
-      border-bottom: 1px solid #1E1E1E;
+      width: 130px;
+      height: auto;
+      border-right: 1px solid #1E1E1E;
+      border-bottom: none;
+      flex-shrink: 0;
+    }
+    .pizza-card-desc {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 11.5px;
+      color: var(--gris-medio);
+      line-height: 1.4;
+      margin: 3px 0 6px;
     }
 
     /* Pantalla 2: detalle en 2 columnas, imagen fija izquierda + scroll independiente derecha */
@@ -834,6 +848,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">⭐ Favorita</span>
           <div class="pizza-card-nombre">Carnívora</div>
+          <p class="pizza-card-desc">Mozzarella, jamón, tocino, chorizo, cabanossi y bolitas de carne.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -851,6 +866,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">⭐ Favorita</span>
           <div class="pizza-card-nombre">Hawaiana</div>
+          <p class="pizza-card-desc">Mozzarella, jamón, piña y durazno.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -868,6 +884,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🔥 Especial</span>
           <div class="pizza-card-nombre">Vera Pizza</div>
+          <p class="pizza-card-desc">Mozzarella, jamón, tocino, chorizo, cabanossi + Aceitunas verdes, champiñones y pimientos.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -885,6 +902,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🔥 Especial</span>
           <div class="pizza-card-nombre">Tropical</div>
+          <p class="pizza-card-desc">Pollo ahumado, piña y durazno.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -902,6 +920,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">✨ Clásica</span>
           <div class="pizza-card-nombre">Americana</div>
+          <p class="pizza-card-desc">Mozzarella y jamón.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -919,6 +938,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">✨ Clásica</span>
           <div class="pizza-card-nombre">Pepperoni</div>
+          <p class="pizza-card-desc">Mozzarella, pepperoni y jamón.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -936,6 +956,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🎁 Combo</span>
           <div class="pizza-card-nombre">Combo Pareja</div>
+          <p class="pizza-card-desc">La combinación perfecta para compartir.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -953,6 +974,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🥖 Pan al Ajo</span>
           <div class="pizza-card-nombre">Clásico</div>
+          <p class="pizza-card-desc">Pan horneado con mantequilla de ajo y hierbas.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -970,6 +992,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🥖 Pan al Ajo</span>
           <div class="pizza-card-nombre">Americano</div>
+          <p class="pizza-card-desc">Pan al ajo especial con un toque americano.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -987,6 +1010,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🥖 Pan al Ajo</span>
           <div class="pizza-card-nombre">Hawaiano</div>
+          <p class="pizza-card-desc">Pan al ajo especial con un toque hawaiano.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -1004,6 +1028,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🥖 Pan al Ajo</span>
           <div class="pizza-card-nombre">De Chorizo</div>
+          <p class="pizza-card-desc">Pan al ajo especial con chorizo.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
@@ -1021,6 +1046,7 @@
         <div class="pizza-card-top">
           <span class="pizza-card-badge">🥖 Pan al Ajo</span>
           <div class="pizza-card-nombre">De Champiñones</div>
+          <p class="pizza-card-desc">Pan al ajo especial con champiñones salteados.</p>
         </div>
         <div class="pizza-card-bottom">
           <div>
